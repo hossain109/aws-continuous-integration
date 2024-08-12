@@ -1,7 +1,7 @@
 version: 0.2
 
 env:
-  variables:
+  parameter-store:
     DOCKER_REGISTRY_USERNAME: /app/docker-credential/username
     DOCKER_REGISTRY_PASSWORD: /app/docker-credential/password
     DOCKER_REGISTRY_URL: /app/docker-credential/url
@@ -14,6 +14,9 @@ phases:
       - pip install -r requirements.txt
   build:
     commands:
+      - echo "$DOCKER_REGISTRY_USERNAME"
+      - echo "$DOCKER_REGISTRY_PASSWORD"
+      - echo "$DOCKER_REGISTRY_URL"
       - echo "build simple python application"
       - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
       - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-app:latest" .
@@ -21,4 +24,3 @@ phases:
   post_build:
     commands:
       - echo "build successful"
-
